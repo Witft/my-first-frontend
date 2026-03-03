@@ -10,7 +10,7 @@
   <div class="container">
     <div class="card">
       <!-- 使用免费头像占位服务 -->
-      <img src="" alt="头像" class="avatar" />
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=zhangsan&backgroundColor=b6e3f4" alt="头像" class="avatar" />
       <h2>张三</h2>
       <p>Java 后端 × AI 学习者</p>
       <ul class="skills">
@@ -19,7 +19,30 @@
         <li>Spring Boot</li>
         <li>正在学前端！</li>
       </ul>
+      <div class="extra-info" style="display: none;">
+        <p>📧 zhangsan@example.com</p>
+        <p>📱 138****8888</p>
+        <p>💬 热爱编程，正在学习前端开发！</p>
+      </div>
+      <!-- 切换按钮 -->
+      <button id="toggleBtn" class="toggle-btn">查看更多</button>
     </div>
   </div>
+  <script>
+    // 获取元素
+    const btn = document.getElementById('toggleBtn');
+    const extra = document.querySelector('.extra-info');
+
+    // 添加点击事件
+    btn.addEventListener('click', function() {
+      if (extra.style.display === 'none') {
+        extra.style.display = 'block';
+        btn.textContent = '收起';
+      } else {
+        extra.style.display = 'none';
+        btn.textContent = '查看更多';
+      }
+    });
+  </script>
 </body>
 </html>
