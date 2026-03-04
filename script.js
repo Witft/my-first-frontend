@@ -139,32 +139,3 @@ card.addEventListener('click', function(e) {
 });
 
 console.log('🚀 Day 3 技能标签交互已加载！点击技能标签试试看~');
-
-// ===== Day 3 练习：技能标签交互 =====
-// 学习目标：querySelectorAll、forEach、classList、事件委托
-
-const skillDescriptions = {
-  'Java': '企业级后端开发首选语言，强类型、生态丰富',
-  'Python': 'AI/数据分析领域的王者，语法简洁优雅',
-  'Spring Boot': 'Java 微服务框架，快速构建生产级应用',
-  '正在学前端！': '全栈开发的必经之路，HTML/CSS/JS 三剑客'
-};
-
-// 获取所有技能标签
-const skillTags = document.querySelectorAll('.skills li');
-
-// 为每个标签添加点击事件
-skillTags.forEach(tag => {
-  tag.addEventListener('click', function() {
-    const skillName = this.textContent;
-    
-    // 切换高亮状态
-    this.classList.toggle('active');
-    
-    // 显示技能描述（简单版）
-    console.log(`点击了：${skillName}`);
-    console.log(`描述：${skillDescriptions[skillName] || '暂无描述'}`);
-  });
-});
-
-console.log('🏷️ 技能标签交互已加载！点击标签试试看~');
