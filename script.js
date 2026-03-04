@@ -111,6 +111,7 @@ skillTags.forEach(tag => {
   tag.style.cursor = 'pointer'; // 鼠标变成手型，提示可点击
   
   tag.addEventListener('click', function() {
+    // 返回技能标签的内容
     const skillName = this.textContent;
     const description = skillDescriptions[skillName] || '暂无描述';
     
