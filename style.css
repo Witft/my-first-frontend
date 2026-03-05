@@ -188,6 +188,15 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* 高亮选中的技能标签 */
+.skills li.active-skill {
+  background: var(--skill-text);
+  color: var(--card-bg);
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+
 /* ===== 响应式优化 ===== */
 @media (max-width: 480px) {
   .card {
