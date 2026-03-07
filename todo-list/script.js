@@ -13,6 +13,7 @@ const addBtn = document.getElementById('addBtn');
 const todoList = document.getElementById('todoList');
 const statsText = document.getElementById('statsText');
 const filterBtns = document.querySelectorAll('.filter-btn');
+const statusBtns = document.querySelectorAll('.status-btn');
 
 // 分类配置
 const categoryConfig = {
@@ -22,7 +23,8 @@ const categoryConfig = {
 };
 
 // 当前筛选状态
-let currentFilter = 'all';
+let currentCategoryFilter = 'all';
+let currentStatusFilter = 'all';
 
 // 初始化
 function init() {
@@ -35,7 +37,7 @@ function init() {
     if (e.key === 'Enter') addTodo();
   });
   
-  // 绑定筛选按钮事件
+  // 绑定分类筛选按钮事件
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       // 更新激活状态
@@ -43,7 +45,20 @@ function init() {
       btn.classList.add('active');
       
       // 更新筛选条件
-      currentFilter = btn.dataset.filter;
+      currentCategoryFilter = btn.dataset.filter;
+      renderTodos();
+    });
+  });
+  
+  // 绑定状态筛选按钮事件
+  statusBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // 更新激活状态
+      statusBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 更新筛选条件
+      currentStatusFilter = btn.dataset.status;
       renderTodos();
     });
   });
@@ -150,8 +165,16 @@ function startEdit(id) {
 function renderTodos() {
   // 根据筛选条件过滤任务
   let filteredTodos = todos;
-  if (currentFilter !== 'all') {
-    filteredTodos = todos.filter(todo => todo.category === currentFilter);
+  
+  // 分类筛选
+  if (currentCategoryFilter !== 'all') {
+    filteredTodos = filteredTodos.filter(todo => todo.category === currentCategoryFilter);
+  }
+  
+  // 状态筛选
+  if (currentStatusFilter !== 'all') {
+    const isCompleted = currentStatusFilter === 'completed';
+    filteredTodos = filteredTodos.filter(todo => todo.completed === isCompleted);
   }
   
   if (filteredTodos.length === 0) {

@@ -21,12 +21,21 @@
       <button id="addBtn">添加</button>
     </div>
     
-    <!-- 筛选区域 -->
+    <!-- 分类筛选 -->
     <div class="filter-area">
-      <button class="filter-btn active" data-filter="all">全部</button>
-      <button class="filter-btn" data-filter="work">工作</button>
-      <button class="filter-btn" data-filter="life">生活</button>
-      <button class="filter-btn" data-filter="study">学习</button>
+      <span class="filter-label">分类：</span>
+      <button class="filter-btn active" data-filter="all" data-type="category">全部</button>
+      <button class="filter-btn" data-filter="work" data-type="category">工作</button>
+      <button class="filter-btn" data-filter="life" data-type="category">生活</button>
+      <button class="filter-btn" data-filter="study" data-type="category">学习</button>
+    </div>
+    
+    <!-- 状态筛选 -->
+    <div class="filter-area">
+      <span class="filter-label">状态：</span>
+      <button class="status-btn active" data-status="all">全部</button>
+      <button class="status-btn" data-status="active">未完成</button>
+      <button class="status-btn" data-status="completed">已完成</button>
     </div>
     
     <!-- 任务列表 -->
