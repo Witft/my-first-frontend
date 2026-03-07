@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Todo List</h1>
+    
+    <!-- 输入区域 -->
+    <div class="input-area">
+      <input type="text" id="todoInput" placeholder="输入新任务..." />
+      <button id="addBtn">添加</button>
+    </div>
+    
+    <!-- 任务列表 -->
+    <ul id="todoList" class="todo-list">
+      <!-- 任务项会动态插入这里 -->
+    </ul>
+    
+    <!-- 统计信息 -->
+    <div class="stats">
+      <span id="statsText">0 个任务</span>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
