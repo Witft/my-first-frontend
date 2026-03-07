@@ -106,6 +106,46 @@ function deleteTodo(id) {
   renderTodos();
 }
 
+// 开始编辑任务
+function startEdit(id) {
+  const todo = todos.find(t => t.id === id);
+  if (!todo) return;
+  
+  const todoItem = document.querySelector(`li[data-id="${id}"]`);
+  const textSpan = todoItem.querySelector('.todo-text');
+  
+  // 创建输入框替换文字
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'edit-input';
+  input.value = todo.text;
+  
+  // 替换 DOM
+  textSpan.replaceWith(input);
+  input.focus();
+  input.select();
+  
+  // 保存编辑的函数
+  const saveEdit = () => {
+    const newText = input.value.trim();
+    if (newText && newText !== todo.text) {
+      todo.text = newText;
+      saveTodos();
+    }
+    renderTodos();
+  };
+  
+  // 绑定事件
+  input.addEventListener('blur', saveEdit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      input.blur(); // 触发保存
+    } else if (e.key === 'Escape') {
+      renderTodos(); // 取消编辑，重新渲染
+    }
+  });
+}
+
 // 渲染任务列表
 function renderTodos() {
   // 根据筛选条件过滤任务
@@ -134,7 +174,7 @@ function renderTodos() {
              ${todo.completed ? 'checked' : ''}
              onchange="toggleTodo(${todo.id})">
       <span class="todo-category ${categoryInfo.class}">${categoryInfo.label}</span>
-      <span class="todo-text">${escapeHtml(todo.text)}</span>
+      <span class="todo-text" ondblclick="startEdit(${todo.id})">${escapeHtml(todo.text)}</span>
       <button class="delete-btn" onclick="deleteTodo(${todo.id})">删除</button>
     </li>
   `}).join('');
