@@ -8,9 +8,21 @@ let todos = [];
 
 // DOM 元素
 const todoInput = document.getElementById('todoInput');
+const categorySelect = document.getElementById('categorySelect');
 const addBtn = document.getElementById('addBtn');
 const todoList = document.getElementById('todoList');
 const statsText = document.getElementById('statsText');
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+// 分类配置
+const categoryConfig = {
+  work: { label: '工作', class: 'work' },
+  life: { label: '生活', class: 'life' },
+  study: { label: '学习', class: 'study' }
+};
+
+// 当前筛选状态
+let currentFilter = 'all';
 
 // 初始化
 function init() {
@@ -21,6 +33,19 @@ function init() {
   addBtn.addEventListener('click', addTodo);
   todoInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addTodo();
+  });
+  
+  // 绑定筛选按钮事件
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // 更新激活状态
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 更新筛选条件
+      currentFilter = btn.dataset.filter;
+      renderTodos();
+    });
   });
   
   // 渲染列表
@@ -45,9 +70,12 @@ function addTodo() {
   const text = todoInput.value.trim();
   if (!text) return;
   
+  const category = categorySelect.value;
+  
   const todo = {
     id: Date.now(),
     text: text,
+    category: category,
     completed: false,
     createdAt: new Date().toISOString()
   };
@@ -80,31 +108,41 @@ function deleteTodo(id) {
 
 // 渲染任务列表
 function renderTodos() {
-  if (todos.length === 0) {
+  // 根据筛选条件过滤任务
+  let filteredTodos = todos;
+  if (currentFilter !== 'all') {
+    filteredTodos = todos.filter(todo => todo.category === currentFilter);
+  }
+  
+  if (filteredTodos.length === 0) {
     todoList.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🎯</div>
-        <p>还没有任务，添加一个吧！</p>
+        <p>${currentFilter === 'all' ? '还没有任务，添加一个吧！' : '该分类下没有任务'}</p>
       </div>
     `;
     statsText.textContent = '0 个任务';
     return;
   }
   
-  todoList.innerHTML = todos.map(todo => `
+  todoList.innerHTML = filteredTodos.map(todo => {
+    const categoryInfo = categoryConfig[todo.category] || categoryConfig.work;
+    return `
     <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
       <input type="checkbox" 
              class="todo-checkbox" 
              ${todo.completed ? 'checked' : ''}
              onchange="toggleTodo(${todo.id})">
+      <span class="todo-category ${categoryInfo.class}">${categoryInfo.label}</span>
       <span class="todo-text">${escapeHtml(todo.text)}</span>
       <button class="delete-btn" onclick="deleteTodo(${todo.id})">删除</button>
     </li>
-  `).join('');
+  `}).join('');
   
   // 更新统计
-  const completedCount = todos.filter(t => t.completed).length;
-  statsText.textContent = `${todos.length} 个任务 · ${completedCount} 个已完成`;
+  const completedCount = filteredTodos.filter(t => t.completed).length;
+  const totalCount = filteredTodos.length;
+  statsText.textContent = `${totalCount} 个任务 · ${completedCount} 个已完成`;
 }
 
 // 防止 XSS

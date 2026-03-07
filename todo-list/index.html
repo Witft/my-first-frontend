@@ -13,7 +13,20 @@
     <!-- 输入区域 -->
     <div class="input-area">
       <input type="text" id="todoInput" placeholder="输入新任务..." />
+      <select id="categorySelect" class="category-select">
+        <option value="work">工作</option>
+        <option value="life">生活</option>
+        <option value="study">学习</option>
+      </select>
       <button id="addBtn">添加</button>
+    </div>
+    
+    <!-- 筛选区域 -->
+    <div class="filter-area">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="work">工作</button>
+      <button class="filter-btn" data-filter="life">生活</button>
+      <button class="filter-btn" data-filter="study">学习</button>
     </div>
     
     <!-- 任务列表 -->

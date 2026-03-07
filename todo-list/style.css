@@ -35,7 +35,7 @@ h1 {
 .input-area {
   display: flex;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 #todoInput {
@@ -48,6 +48,20 @@ h1 {
 }
 
 #todoInput:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.category-select {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.category-select:focus {
   outline: none;
   border-color: #667eea;
 }
@@ -65,6 +79,34 @@ h1 {
 
 #addBtn:hover {
   background: #5a6fd6;
+}
+
+/* 筛选区域 */
+.filter-area {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover {
+  background: #f0f0f0;
+}
+
+.filter-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
 }
 
 /* 任务列表 */
@@ -93,6 +135,30 @@ h1 {
 .todo-item.completed .todo-text {
   text-decoration: line-through;
   color: #999;
+}
+
+.todo-category {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-right: 8px;
+  font-weight: 500;
+}
+
+.todo-category.work {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.todo-category.life {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.todo-category.study {
+  background: #e8f5e9;
+  color: #388e3c;
 }
 
 .todo-checkbox {
