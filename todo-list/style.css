@@ -178,7 +178,7 @@ h1 {
   border-left: none;
 }
 
-.todo-item.completed.overdue .due-date {
+.todo-item.completed .due-date {
   color: #9ca3af;  /* 已完成任务的灰色日期 */
   font-weight: normal;
 }
