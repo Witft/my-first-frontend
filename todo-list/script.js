@@ -14,8 +14,6 @@ const todoList = document.getElementById('todoList');
 const statsText = document.getElementById('statsText');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const statusBtns = document.querySelectorAll('.status-btn');
-// 添加任务时获取日期
-const dueDate = document.getElementById('dueDateInput').value;
 
 // 分类配置
 const categoryConfig = {
@@ -88,6 +86,8 @@ function addTodo() {
   if (!text) return;
 
   const category = categorySelect.value;
+  // 添加任务时获取日期
+  const dueDate = document.getElementById('dueDateInput').value;
 
   const todo = {
     id: Date.now(),
@@ -208,13 +208,12 @@ function renderTodos() {
     return new Date(a.dueDate) - new Date(b.dueDate);
   });
 
-  // 渲染时加日期显示和逾期样式
-  const overdueClass = isOverdue(todo.dueDate) && !todo.completed ? 'overdue' : '';
-
   todoList.innerHTML = filteredTodos.map(todo => {
     const categoryInfo = categoryConfig[todo.category] || categoryConfig.work;
+    // 渲染时加日期显示和逾期样式
+    const overdueClass = isOverdue(todo.dueDate) && !todo.completed ? 'overdue' : '';
     return `
-    <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+    <li class="todo-item ${todo.completed ? 'completed' : ''} ${overdueClass}" data-id="${todo.id}">
       <input type="checkbox" 
              class="todo-checkbox" 
              ${todo.completed ? 'checked' : ''}
