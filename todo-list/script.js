@@ -14,6 +14,8 @@ const todoList = document.getElementById('todoList');
 const statsText = document.getElementById('statsText');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const statusBtns = document.querySelectorAll('.status-btn');
+// 添加任务时获取日期
+const dueDate = document.getElementById('dueDateInput').value;
 
 // 分类配置
 const categoryConfig = {
@@ -30,39 +32,39 @@ let currentStatusFilter = 'all';
 function init() {
   // 从 localStorage 加载数据
   loadTodos();
-  
+
   // 绑定事件
   addBtn.addEventListener('click', addTodo);
   todoInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addTodo();
   });
-  
+
   // 绑定分类筛选按钮事件
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       // 更新激活状态
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
+
       // 更新筛选条件
       currentCategoryFilter = btn.dataset.filter;
       renderTodos();
     });
   });
-  
+
   // 绑定状态筛选按钮事件
   statusBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       // 更新激活状态
       statusBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
+
       // 更新筛选条件
       currentStatusFilter = btn.dataset.status;
       renderTodos();
     });
   });
-  
+
   // 渲染列表
   renderTodos();
 }
@@ -84,24 +86,34 @@ function saveTodos() {
 function addTodo() {
   const text = todoInput.value.trim();
   if (!text) return;
-  
+
   const category = categorySelect.value;
-  
+
   const todo = {
     id: Date.now(),
     text: text,
     category: category,
+    dueDate: dueDate,  // 新增
     completed: false,
     createdAt: new Date().toISOString()
   };
-  
+
   todos.unshift(todo); // 新任务放最前面
   saveTodos();
   renderTodos();
-  
+
   // 清空输入框
   todoInput.value = '';
   todoInput.focus();
+}
+
+// 检查是否逾期
+function isOverdue(dueDate) {
+  if (!dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dueDate);
+  return due < today;
 }
 
 // 切换完成状态
@@ -125,21 +137,21 @@ function deleteTodo(id) {
 function startEdit(id) {
   const todo = todos.find(t => t.id === id);
   if (!todo) return;
-  
+
   const todoItem = document.querySelector(`li[data-id="${id}"]`);
   const textSpan = todoItem.querySelector('.todo-text');
-  
+
   // 创建输入框替换文字
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'edit-input';
   input.value = todo.text;
-  
+
   // 替换 DOM
   textSpan.replaceWith(input);
   input.focus();
   input.select();
-  
+
   // 保存编辑的函数
   const saveEdit = () => {
     const newText = input.value.trim();
@@ -149,7 +161,7 @@ function startEdit(id) {
     }
     renderTodos();
   };
-  
+
   // 绑定事件
   input.addEventListener('blur', saveEdit);
   input.addEventListener('keydown', (e) => {
@@ -165,18 +177,18 @@ function startEdit(id) {
 function renderTodos() {
   // 根据筛选条件过滤任务
   let filteredTodos = todos;
-  
+
   // 分类筛选
   if (currentCategoryFilter !== 'all') {
     filteredTodos = filteredTodos.filter(todo => todo.category === currentCategoryFilter);
   }
-  
+
   // 状态筛选
   if (currentStatusFilter !== 'all') {
     const isCompleted = currentStatusFilter === 'completed';
     filteredTodos = filteredTodos.filter(todo => todo.completed === isCompleted);
   }
-  
+
   if (filteredTodos.length === 0) {
     todoList.innerHTML = `
       <div class="empty-state">
@@ -187,7 +199,18 @@ function renderTodos() {
     statsText.textContent = '0 个任务';
     return;
   }
-  
+
+  // 渲染前排序
+  filteredTodos.sort((a, b) => {
+    // 没日期的放后面
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
+
+  // 渲染时加日期显示和逾期样式
+  const overdueClass = isOverdue(todo.dueDate) && !todo.completed ? 'overdue' : '';
+
   todoList.innerHTML = filteredTodos.map(todo => {
     const categoryInfo = categoryConfig[todo.category] || categoryConfig.work;
     return `
@@ -198,10 +221,11 @@ function renderTodos() {
              onchange="toggleTodo(${todo.id})">
       <span class="todo-category ${categoryInfo.class}">${categoryInfo.label}</span>
       <span class="todo-text" ondblclick="startEdit(${todo.id})">${escapeHtml(todo.text)}</span>
+      <span class="due-date">${todo.dueDate || '无截止日期'}</span>
       <button class="delete-btn" onclick="deleteTodo(${todo.id})">删除</button>
     </li>
   `}).join('');
-  
+
   // 更新统计
   const completedCount = filteredTodos.filter(t => t.completed).length;
   const totalCount = filteredTodos.length;
