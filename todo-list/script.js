@@ -193,7 +193,7 @@ function renderTodos() {
     todoList.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🎯</div>
-        <p>${currentFilter === 'all' ? '还没有任务，添加一个吧！' : '该分类下没有任务'}</p>
+        <p>${currentCategoryFilter === 'all' ? '还没有任务，添加一个吧！' : '该分类下没有任务'}</p>
       </div>
     `;
     statsText.textContent = '0 个任务';
