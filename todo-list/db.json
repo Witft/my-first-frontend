@@ -1,0 +1,36 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "text": "完成 JavaScript 查漏补缺",
+      "category": "study",
+      "dueDate": "2026-03-10",
+      "completed": true,
+      "createdAt": "2026-03-08T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "text": "学习 Vue 基础",
+      "category": "study",
+      "dueDate": "2026-03-15",
+      "completed": false,
+      "createdAt": "2026-03-09T08:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "text": "买牛奶和面包",
+      "category": "life",
+      "dueDate": "2026-03-10",
+      "completed": false,
+      "createdAt": "2026-03-10T06:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "text": "整理项目文档",
+      "category": "work",
+      "dueDate": "2026-03-12",
+      "completed": false,
+      "createdAt": "2026-03-09T14:00:00.000Z"
+    }
+  ]
+}
