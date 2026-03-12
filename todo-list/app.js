@@ -51,6 +51,28 @@ async function init() {
     });
   });
 
+  // 使用事件委托处理所有交互
+  todoList.addEventListener('change', (e) => {
+    if (e.target.classList.contains('todo-checkbox')) {
+      const id = e.target.dataset.id;
+      toggleTodo(id);
+    }
+  });
+
+  todoList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+      const id = e.target.dataset.id;
+      deleteTodo(id);
+    }
+  });
+
+  todoList.addEventListener('dblclick', (e) => {
+    if (e.target.classList.contains('todo-text')) {
+      const id = e.target.closest('li').dataset.id;
+      startEdit(id);
+    }
+  });
+
   // 从 API 加载数据
   await loadTodos();
 }
@@ -216,11 +238,11 @@ function renderTodos() {
       <input type="checkbox" 
              class="todo-checkbox" 
              ${todo.completed ? 'checked' : ''}
-             onchange="toggleTodo(${todo.id})">
+             data-id="${todo.id}">
       <span class="todo-category ${categoryInfo.class}">${categoryInfo.label}</span>
-      <span class="todo-text" ondblclick="startEdit(${todo.id})">${escapeHtml(todo.text)}</span>
+      <span class="todo-text">${escapeHtml(todo.text)}</span>
       <span class="due-date">${todo.dueDate || '无截止日期'}</span>
-      <button class="delete-btn" onclick="deleteTodo(${todo.id})">删除</button>
+      <button class="delete-btn" data-id="${todo.id}">删除</button>
     </li>
   `}).join('');
 
