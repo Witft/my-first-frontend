@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>📝 Todo List</h1>
+
+
+    <!-- 输入区域 -->
+    <div class="input-area">
+      <input v-model="newText" @key.enter="addTodo">
+      <input type="date" v-model="newDate">
+      <select v-model="newCategory" id="categorySelect" class="category-select">
+        <option value="work">工作</option>
+        <option value="life">生活</option>
+        <option value="study">学习</option>
+      </select>
+      <button id="addBtn" @click="addTodo">添加</button>
+    </div>
+
+    <!-- 分类筛选 -->
+    <button class="filter-area" v-for="filter in ['all', 'work', 'life', 'study']"
+      :class="active: categoryFilter === filter" @click="categoryFilter = filter">...</button>
+
+    <!-- 状态筛选 -->
+    <div class="filter-area">
+      <span class="filter-label">状态：</span>
+      <button class="status-btn active" data-status="all">全部</button>
+      <button class="status-btn" data-status="active">未完成</button>
+      <button class="status-btn" data-status="completed">已完成</button>
+    </div>
+
+    <!-- 任务列表 -->
+    <ul id="todoList" class="todo-list">
+      <!-- 任务项会动态插入这里 -->
+    </ul>
+
+    <!-- 统计信息 -->
+    <div class="stats">
+      <span id="statsText">0 个任务</span>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
