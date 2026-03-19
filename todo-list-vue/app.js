@@ -1,37 +1,47 @@
-onMounted(async () => { 
-  init();
-})
+const { createApp, ref, computed, onMounted } = Vue
+
+createApp({
+  setup() {
+    const todos = ref([])           // 任务列表
+    const newText = ref('')         // 输入框内容
+    const newDate = ref('')         // 截止日期
+    const newCategory = ref('work') // 分类
+    const categoryFilter = ref('all') // 当前分类筛选
+    const statusFilter = ref('all')   // 当前状态筛选
+
+    const filteredTodos = computed(() => {
+      const filtered = todos.value.filter(t => {
+        // 分类筛选
+        const matchCategory = categoryFilter.value === 'all' || t.category === categoryFilter.value
+        // 状态筛选
+        const matchStatus = statusFilter.value === 'all'
+          || (statusFilter.value === 'completed' && t.completed)
+          || (statusFilter.value === 'active' && !t.completed)
+
+        return matchCategory && matchStatus
+      })
+
+      return filtered.sort((a, b) => {
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return new Date(a.dueDate) - new Date(b.dueDate);
+      })
+    })
+
+    const stats = computed(() => {
+      const completedCount = filteredTodos.value.filter(t => t.completed).length;
+      const totalCount = filteredTodos.value.length;
+      return `已完成 ${completedCount} / 总计 ${totalCount}`;
+    })
+
+    onMounted(() => {
+      
+    })
+  }
+}).mount('#app')
 
 // 任务数组
-const todos = ref([])           // 任务列表
-const newText = ref('')         // 输入框内容
-const newDate = ref('')         // 截止日期
-const newCategory = ref('work') // 分类
-const categoryFilter = ref('all') // 当前分类筛选
-const statusFilter = ref('all')   // 当前状态筛选
-const filteredTodos = computed(() => {
-  const filtered = todos.value.filter(t => {
-    // 分类筛选
-    const matchCategory = categoryFilter.value === 'all' || t.category === categoryFilter.value
-    // 状态筛选
-    const matchStatus = statusFilter.value === 'all'
-      || (statusFilter.value === 'completed' && t.completed)
-      || (statusFilter.value === 'active' && !t.completed)
 
-    return matchCategory && matchStatus
-  })
-
-  return filtered.sort((a, b) => {
-    if (!a.dueDate) return 1;
-    if (!b.dueDate) return -1;
-    return new Date(a.dueDate) - new Date(b.dueDate);
-  })
-})
-const stats = computed(() => {
-  const completedCount = filteredTodos.value.filter(t => t.completed).length;
-  const totalCount = filteredTodos.value.length;
-  return `已完成 ${completedCount} / 总计 ${totalCount}`;
-})
 
 // DOM 元素
 const todoInput = document.getElementById('todoInput');
@@ -49,17 +59,6 @@ const categoryConfig = {
   life: { label: '生活', class: 'life' },
   study: { label: '学习', class: 'study' }
 };
-
-// 初始化
-async function init() {
-  // 从 API 加载数据
-  await loadTodos();
-}
-
-// 加载数据（API 版本）
-async function loadTodos() {
-  todos = await fetchTodos();
-}
 
 // 添加任务（API 版本）
 async function addTodo() {

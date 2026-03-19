@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
 <head>
   <meta charset="UTF-8">
@@ -26,8 +27,13 @@
     </div>
 
     <!-- 分类筛选 -->
-    <button class="filter-area" v-for="filter in ['all', 'work', 'life', 'study']"
-      :class="active: categoryFilter === filter" @click="categoryFilter = filter">...</button>
+    <div class="filter-area">
+      <button v-for="filter in ['all', 'work', 'life', 'study']"
+        :class="['filter-btn', {active: categoryFilter === filter}]" @click="categoryFilter = filter">
+        {{filter === 'all' ? '全部' : categoryConfig[filter].label}}
+      </button>
+    </div>
+
 
     <!-- 状态筛选 -->
     <div class="filter-area">
