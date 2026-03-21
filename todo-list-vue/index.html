@@ -45,12 +45,35 @@
 
     <!-- 任务列表 -->
     <ul id="todoList" class="todo-list">
-      <!-- 任务项会动态插入这里 -->
+      <li v-for="todo in filteredTodos" :key="todo.id"
+        :class="['todo-item', {completed: todo.completed, overdue: isOverdue(todo.dueDate) && !todo.completed}]">
+
+        <input type="checkbox" :checked="todo.completed" @change="toggleTodo(todo.id)">
+        <!-- 这里怎么处理默认值的？ -->
+        <span class="todo-category" :class="todo.category">
+          {{categoryConfig[todo.category].label}}
+        </span>
+
+        <span class="todo-text">
+          {{todo.text}}
+        </span>
+
+        <span class="due-text">
+          {{todo.dueDate || '无截止日期'}}
+        </span>
+        <button class="delete-btn" @click="deleteTodo(todo.id)">删除</button>
+        <button @click="startEdit(todo)">编辑</button>
+      </li>
+
+      <div v-if="filteredTodos.length === 0" class="empty-state">
+        <div class="empty-state-icon">🎯</div>
+        <p>还没有任务，添加一个吧！</p>
+      </div>
     </ul>
 
     <!-- 统计信息 -->
     <div class="stats">
-      <span id="statsText">0 个任务</span>
+      <span id="statsText">{{stats}}</span>
     </div>
   </div>
 
