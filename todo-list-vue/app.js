@@ -92,44 +92,36 @@ createApp({
       return due < today;
     }
 
+    // 开始编辑
+    function startEdit(todo) {
+      editingId.value = todo.id;
+      editText.value = todo.text; // 把当前文本赋给临时变量
+    }
+
     // 开始编辑（本地编辑，API 保存）
-    async function startEdit(id) {
-      const todo = todos.value.find(t => t.id === id);
-      if (!todo) return;
+    async function saveEdit(id) {
+      if (!editText.value.trim() || editText.value === todos.value.find(t => t.id === id).text) {
+        editingId.value = null; // 没修改就直接退出编辑
+        return;
+      }
 
-      const todoItem = document.querySelector(`li[data-id="${id}"]`);
-      const textSpan = todoItem.querySelector('.todo-text');
+      try {
+        const updated = await updateTodo(id, { text: editText.value });
+        const index = todos.value.findIndex(t => t.id === id);
+        todos.value[index] = updated;
+        editingId.value = null; // 保存成功，退出编辑模式
+      } catch (error) {
+        console.error('保存失败:', error);
+      }
 
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'edit-input';
-      input.value = todo.text;
+      // TODO 这里不用新的语句替代吗？
+      // input.focus();
+      // input.select();
+    }
 
-      textSpan.replaceWith(input);
-      input.focus();
-      input.select();
-
-      const saveEdit = async () => {
-        const newText = input.value.trim();
-        if (newText && newText !== todo.text) {
-          try {
-            const updated = await updateTodo(id, { text: newText });
-            const index = todos.value.findIndex(t => t.id === id);
-            todos.value[index] = updated;
-          } catch (error) {
-            console.error('保存失败:', error);
-          }
-        }
-      };
-
-      input.addEventListener('blur', saveEdit);
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          input.blur();
-        } else if (e.key === 'Escape') {
-          // 取消编辑，重新渲染 todo 列表
-        }
-      });
+    // 取消编辑
+    function cancelEdit() {
+      editingId.value = null;
     }
 
     return {

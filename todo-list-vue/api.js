@@ -3,14 +3,14 @@
 const API_URL = 'http://localhost:3000/todos';
 
 // 获取所有任务
-async function fetchTodos() {
+window.fetchTodos = async function fetchTodos() {
   const response = await fetch(API_URL);
   if (!response.ok) throw new Error('获取任务失败');
   return response.json();
 }
 
 // 添加任务
-async function createTodo(todo) {
+window.createTodo = async function createTodo(todo) {
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -21,7 +21,7 @@ async function createTodo(todo) {
 }
 
 // 更新任务
-async function updateTodo(id, updates) {
+window.updateTodo = async function updateTodo(id, updates) {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -32,7 +32,7 @@ async function updateTodo(id, updates) {
 }
 
 // 删除任务
-async function deleteTodoApi(id) {
+window.deleteTodoApi = async function deleteTodoApi(id) {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'DELETE'
   });

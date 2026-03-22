@@ -16,7 +16,7 @@
 
     <!-- 输入区域 -->
     <div class="input-area">
-      <input v-model="newText" @key.enter="addTodo">
+      <input v-model="newText" @keyup.="addTodo">
       <input type="date" v-model="newDate">
       <select v-model="newCategory" id="categorySelect" class="category-select">
         <option value="work">工作</option>
@@ -47,7 +47,9 @@
         </span>
 
         <span class="todo-text">
-          {{todo.text}}
+          <input v-if="editingId === todo.id" v-model="editText" class="edit-input" @blur="saveEdit(todo.id)"
+            @keyup.enter="saveEdit(todo.id)" @keyup.esc="cancelEdit" autofocus>
+          <span v-else @dblclick="startEdit(todo)">{{todo.text}}</span>
         </span>
 
         <span class="due-text">
