@@ -37,112 +37,108 @@ createApp({
       return `已完成 ${completedCount} / 总计 ${totalCount}`;
     })
 
-    onMounted(() => { 
-      
+    onMounted(() => {
+      fetchTodos().then(data => todos.value = data)
     })
+
+    // 分类配置
+    const categoryConfig = {
+      work: { label: '工作', class: 'work' },
+      life: { label: '生活', class: 'life' },
+      study: { label: '学习', class: 'study' }
+    };
+
+    // 添加任务（API 版本）
+    async function addTodo() {
+      const text = newText.value.trim();
+      if (!text) return;
+      const todo = {
+        text: text,
+        category: newCategory.value,
+        dueDate: newDate.value,
+        completed: false,
+        createdAt: new Date().toISOString()
+      };
+
+      const newTodo = await createTodo(todo);
+      todos.value.unshift(newTodo);
+      newText.value = '';
+      newDate.value = '';
+    }
+
+    // 切换完成状态（API 版本）
+    async function toggleTodo(id) {
+      const todo = todos.value.find(t => t.id === id);
+      if (!todo) return;
+      const updated = await updateTodo(id, { completed: !todo.completed });
+      // 更新本地数据
+      const index = todos.value.findIndex(t => t.id === id);
+      todos.value[index] = updated;
+    }
+
+    // 删除任务（API 版本）
+    async function deleteTodo(id) {
+      if (!confirm('确定要删除这个任务吗？')) return;
+      await deleteTodoApi(id);
+      todos.value = todos.value.filter(t => t.id !== id);
+    }
+
+    // 检查是否逾期
+    function isOverdue(dueDate) {
+      if (!dueDate) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const due = new Date(dueDate);
+      return due < today;
+    }
+
+    // 开始编辑（本地编辑，API 保存）
+    async function startEdit(id) {
+      const todo = todos.value.find(t => t.id === id);
+      if (!todo) return;
+
+      const todoItem = document.querySelector(`li[data-id="${id}"]`);
+      const textSpan = todoItem.querySelector('.todo-text');
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'edit-input';
+      input.value = todo.text;
+
+      textSpan.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const saveEdit = async () => {
+        const newText = input.value.trim();
+        if (newText && newText !== todo.text) {
+          try {
+            const updated = await updateTodo(id, { text: newText });
+            const index = todos.value.findIndex(t => t.id === id);
+            todos.value[index] = updated;
+          } catch (error) {
+            console.error('保存失败:', error);
+          }
+        }
+      };
+
+      input.addEventListener('blur', saveEdit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          input.blur();
+        } else if (e.key === 'Escape') {
+          // 取消编辑，重新渲染 todo 列表
+        }
+      });
+    }
+
+    return {
+      todos, newText, newDate, newCategory,
+      categoryFilter, statusFilter,
+      filteredTodos, stats,
+      addTodo, toggleTodo, deleteTodo,
+      startEdit, isOverdue,
+      categoryConfig
+    }
   }
 }).mount('#app')
-
-// 分类配置
-const categoryConfig = {
-  work: { label: '工作', class: 'work' },
-  life: { label: '生活', class: 'life' },
-  study: { label: '学习', class: 'study' }
-};
-
-// 添加任务（API 版本）
-async function addTodo() {
-  const text = newText.value.trim();
-  if (!text) return;
-  const todo = {
-    text: text,
-    category: newCategory.value,
-    dueDate: newDate.value,
-    completed: false,
-    createdAt: new Date().toISOString()
-  };
-
-  const newTodo = await createTodo(todo);
-  todos.value.unshift(newTodo);
-  newText.value = '';
-  newDate.value = '';
-}
-
-// 切换完成状态（API 版本）
-async function toggleTodo(id) {
-  const todo = todos.value.find(t => t.id === id);
-  if (!todo) return;
-  const updated = await updateTodo(id, { completed: !todo.completed });
-  // 更新本地数据
-  const index = todos.value.findIndex(t => t.id === id);
-  todos[index] = updated;
-}
-
-// 删除任务（API 版本）
-async function deleteTodo(id) {
-  if (!confirm('确定要删除这个任务吗？')) return;
-  await deleteTodoApi(id);
-  todos = todos.value.filter(t => t.id !== id);
-}
-
-// 检查是否逾期
-async function isOverdue(dueDate) {
-  if (!dueDate) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  return due < today;
-}
-
-// 开始编辑（本地编辑，API 保存）
-async function startEdit(id) {
-  const todo = todos.find(t => t.id === id);
-  if (!todo) return;
-
-  const todoItem = document.querySelector(`li[data-id="${id}"]`);
-  const textSpan = todoItem.querySelector('.todo-text');
-
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.className = 'edit-input';
-  input.value = todo.text;
-
-  textSpan.replaceWith(input);
-  input.focus();
-  input.select();
-
-  const saveEdit = async () => {
-    const newText = input.value.trim();
-    if (newText && newText !== todo.text) {
-      try {
-        const updated = await updateTodo(id, { text: newText });
-        const index = todos.findIndex(t => t.id === id);
-        todos[index] = updated;
-      } catch (error) {
-        console.error('保存失败:', error);
-      }
-    }
-    renderTodos();
-  };
-
-  input.addEventListener('blur', saveEdit);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      input.blur();
-    } else if (e.key === 'Escape') {
-      renderTodos();
-    }
-  });
-}
-
-// 检查是否逾期
-function isOverdue(dueDate) {
-  if (!dueDate) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  return due < today;
-}
-
-// 启动
-init();
