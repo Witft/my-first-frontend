@@ -1,19 +1,11 @@
 {
   "todos": [
     {
-      "id": "1",
-      "text": "完成 JavaScript 查漏补缺",
-      "category": "study",
-      "dueDate": "2026-03-10",
-      "completed": true,
-      "createdAt": "2026-03-08T10:00:00.000Z"
-    },
-    {
       "id": "3",
-      "text": "买牛奶和面包",
+      "text": "买牛奶和面包333",
       "category": "life",
       "dueDate": "2026-03-10",
-      "completed": false,
+      "completed": true,
       "createdAt": "2026-03-10T06:00:00.000Z"
     },
     {
@@ -23,6 +15,14 @@
       "dueDate": "",
       "completed": false,
       "createdAt": "2026-03-10T14:32:44.430Z"
+    },
+    {
+      "id": "92d1",
+      "text": "aaaaa",
+      "category": "life",
+      "dueDate": "2026-03-26",
+      "completed": false,
+      "createdAt": "2026-03-22T13:50:06.137Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

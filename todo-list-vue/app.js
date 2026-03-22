@@ -114,9 +114,6 @@ createApp({
         console.error('保存失败:', error);
       }
 
-      // TODO 这里不用新的语句替代吗？
-      // input.focus();
-      // input.select();
     }
 
     // 取消编辑

@@ -50,7 +50,6 @@
         :class="['todo-item', {completed: todo.completed, overdue: isOverdue(todo.dueDate) && !todo.completed}]">
 
         <input type="checkbox" :checked="todo.completed" @change="toggleTodo(todo.id)">
-        <!-- 这里怎么处理默认值的？ -->
         <span class="todo-category" :class="todo.category">
           {{categoryConfig[todo.category].label}}
         </span>
