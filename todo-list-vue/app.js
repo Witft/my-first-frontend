@@ -129,8 +129,9 @@ createApp({
       categoryFilter, statusFilter,
       filteredTodos, stats,
       addTodo, toggleTodo, deleteTodo,
-      startEdit, isOverdue,
-      categoryConfig
+      startEdit, isOverdue, saveEdit, cancelEdit,
+      categoryConfig,
+      editingId, editText
     }
   }
 }).mount('#app')

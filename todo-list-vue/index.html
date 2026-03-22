@@ -16,7 +16,7 @@
 
     <!-- 输入区域 -->
     <div class="input-area">
-      <input v-model="newText" @keyup.="addTodo">
+      <input v-model="newText" @keyup.enter="addTodo">
       <input type="date" v-model="newDate">
       <select v-model="newCategory" id="categorySelect" class="category-select">
         <option value="work">工作</option>
@@ -28,10 +28,19 @@
 
     <!-- 分类筛选 -->
     <div class="filter-area">
-      <span class="filter-label">状态：</span>
+      <span class="filter-label">分类：</span>
       <button v-for="filter in ['all', 'work', 'life', 'study']"
         :class="['filter-btn', {active: categoryFilter === filter}]" @click="categoryFilter = filter">
         {{filter === 'all' ? '全部' : categoryConfig[filter].label}}
+      </button>
+    </div>
+
+    <!-- 状态筛选（你删掉了，需要加回来） -->
+    <div class="filter-area">
+      <span class="filter-label">状态：</span>
+      <button v-for="status in ['all', 'active', 'completed']"
+        :class="['status-btn', {active: statusFilter === status}]" @click="statusFilter = status">
+        {{status === 'all' ? '全部' : status === 'active' ? '未完成' : '已完成'}}
       </button>
     </div>
 
